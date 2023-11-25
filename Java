@@ -1,10 +1,166 @@
-- 👋 Hi, I’m @NguyenHoang-pluto
-- 👀 I’m interested in ...
-- 🌱 I’m currently learning ...
-- 💞️ I’m looking to collaborate on ...
-- 📫 How to reach me ...
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Random;
+import java.util.Scanner;
 
-<!---
-NguyenHoang-pluto/NguyenHoang-pluto is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
-You can click the Preview link to take a look at your changes.
---->
+public class DeThi extends HocPhan{
+    private DanhSachCauHoi danhSachCauHoi = new DanhSachCauHoi();
+    private String maDeThi;
+    private String maCauHoi[];
+    private String tenMonThi;
+    private int thoiGian;
+    private int soCau;
+    
+    public DeThi() {};
+    public DeThi(String maDeThi,String maCauHoi[], String tenMonThi, int thoiGian, int soCau) {
+        this.maDeThi = maDeThi;
+        this.maCauHoi = maCauHoi;
+        this.tenMonThi = tenMonThi;
+        this.thoiGian = thoiGian;
+        this.soCau = soCau;
+    }
+    public String getMaDeThi() {
+        return this.maDeThi;
+    }
+    public String getMaCauHoi(String documentsIn) {
+        return this.maCauHoi[SoCauDanhSach(documentsIn)];
+    }
+    public String getTenMonThi() {
+        return this.tenMonThi;
+    }
+    public int getThoiGian() {
+        return this.thoiGian;
+    }
+    public int getSoCau() {
+        return this.soCau;
+    }
+    public void setMaDeThi(String maDeThi) {
+        this.maDeThi = maDeThi;
+    }
+    public void setMaCauHoi(String maCauHoi[]) {
+        this.maCauHoi = maCauHoi;
+    }
+    public void setThoiGian(int thoiGian) {
+        this.thoiGian = thoiGian;
+    }
+    public void setSoCau(int soCau) {
+        this.soCau = soCau;
+    }
+    public void NhapMaDeThi() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Nhap ma de thi :");
+        this.maDeThi = scanner.nextLine();
+        if(!KiemTraThongTin(this.maDeThi)){
+            System.out.println("Ma de thi khong hop le!");
+            NhapMaDeThi();
+        }
+    }
+    public void NhapTenMonThi() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Nhap ten mon thi:");
+        this.tenMonThi = scanner.nextLine();
+        if(!KiemTraThongTin(this.tenMonThi)){
+            System.out.println("Ten mon thi khong hop le!");
+            NhapTenMonThi();
+        }     
+    }
+    public void NhapMaCauHoi(){
+       for(int i = 0; i < this.SoCauDanhSach(this.tenMonThi.concat(".txt")); i++) {
+        this.maCauHoi[i] = "#CH" + i;
+       }
+    }
+    public void NhapThoiGian(){
+        int tmp;
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Moi nhap thoi gian thi :");
+        tmp = scanner.nextInt();
+        if(tmp > 0){
+        this.thoiGian = tmp;
+        }
+        else {
+            System.out.println("Thoi gian khong hop le!");
+            NhapSoCau();
+        }
+
+    }
+    public void NhapSoCau() {
+        int tmp;
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Moi nhap so cau cho mon thi :");
+        tmp = scanner.nextInt();
+        if (tmp > 0) {
+            this.soCau = tmp;
+        } else {
+            System.out.println("So cau khong hop le! Nhap lai.");
+            NhapSoCau(); 
+        }
+    }
+    
+    public boolean KiemTraThongTin(String thongTin) {
+        return thongTin != null && !thongTin.trim().isEmpty();
+    }
+    public void NhapThongTinDeThi(){
+       // NhapMaDeThi();
+        NhapTenMonThi();
+       // NhapMaCauHoi();
+        NhapSoCau();
+        //NhapThoiGian();
+    }
+    public void XuatThongTinDeThi() {
+      //  System.out.println("Ma de thi: " + this.maDeThi);
+        System.out.println("Ten mon thi: " +this.tenMonThi);
+       // System.out.println("Thoi gian:" + this.thoiGian + " phut");
+        System.out.println("So cau: "+ this.soCau);
+    }
+    public void DanhSachDeThi(){
+       //menu
+    }
+    public void HienThiDeThi(){ 
+        NhapThongTinDeThi();    
+        XuatThongTinDeThi(); 
+        NoiDungDeThi(this.tenMonThi.concat(".txt"));
+    }
+   public void NoiDungDeThi(String documentsIn){ 
+      int index[] = new int[SoCauDanhSach(documentsIn)]; 
+      this.danhSachCauHoi.docFile(documentsIn);
+      LayNgauNhienCauHoi(this.SoCauDanhSach(documentsIn),index);
+      this.danhSachCauHoi.XuatCauHoiTheoViTri(this.soCau, index);   
+   }
+   public void LayNgauNhienCauHoi(int tongCau, int index[]){
+        Random random = new Random();
+        for(int i = 0; i < this.soCau; i++){
+            index[i] = random.nextInt(tongCau);
+            for(int j = 0; j < i; j++){
+                  if(index[j] == index[i]) { 
+                    i = i - 1;    
+            }
+        }
+   }
+}
+   public int SoCauDanhSach(String documentsIn){
+        try{
+            int count = 0;
+            FileReader fr = new FileReader(documentsIn);
+            BufferedReader br = new BufferedReader(fr);
+            String line = "";
+            while (br.readLine() != null) {
+                for (int i = 0; i < 4; i++) {
+                    br.readLine(); // Bỏ qua 4 dòng
+                }
+                count++;
+            }
+        fr.close();
+        br.close();
+        return count ;
+        } 
+       catch(IOException e){
+           return -1;
+       }
+   }
+ public static void main(String[] args){
+    DeThi deThi = new DeThi();
+    deThi.HienThiDeThi();
+ }
+}
+
